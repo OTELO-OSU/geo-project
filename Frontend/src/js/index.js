@@ -105,13 +105,13 @@ APP.modules.map = (function() {
                     marker.on('click', function(e) {
                         measurements = '';
                         rawdatas = '';
-                        if (k.MEASUREMENT) {
-                            k.MEASUREMENT.forEach(function(k, v) {
+                        if (k.FILES) {
+                            k.FILES.forEach(function(k, v) {
                                 if ((new RegExp('_RAW')).test(k.ABBREVIATION)) {
                                     rawdata = ' <div class="item measurement_abbreviation_raw" ><input type="hidden" value="' + k.ABBREVIATION + '"> <div class="content"> <div class="header">' + k.ABBREVIATION + '</div><div>' + k.NATURE + '</div>  <a href="/Backend/src/index.php/download_poi_raw_data/' + k.ABBREVIATION + '"><div class="ui green  button">Download</div></a></div> </div>'
                                     rawdatas += rawdata;
                                 } else {
-                                    measurement = ' <div class="item measurement_abbreviation" ><input type="hidden" value="' + k.ABBREVIATION + '"> <div class="content"> <div class="header">' + k.ABBREVIATION + '</div><div>' + k.NATURE + '</div> </div> </div>'
+                                    measurement = ' <div class="item measurement_abbreviation" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL + '</div><div>' + k.DATA_URL + '</div> </div> </div>'
                                     measurements += measurement;
                                 }
                             });
@@ -160,16 +160,18 @@ APP.modules.map = (function() {
                         $('.ui.sidebar.right').append('<div class="ui styled accordion"> <div class="active title"> <i class="dropdown icon"></i> ' + k.STATION + ' </div> <div class="active content"> <h3>' + k.TITLE + '</h3><p> Description: ' + k.SAMPLING_POINT[0].DESCRIPTION + '<br> Latitude: ' + k.SAMPLING_POINT[0].LATITUDE + ' Longitude: ' + k.SAMPLING_POINT[0].LONGITUDE + '</p>' + picturemetas + '</div>' + measurements + pictures + rawdatas)
                         $('.ui.accordion').accordion();
                         $('.item.measurement_abbreviation').on('click', function(e) {
-                            mesure = $(this).children()[0].value;
-                            mesure = mesure.replace("/ /g", "");
-                            name = k.SUPPLEMENTARY_FIELDS.SAMPLE_NAME + "_" + mesure;
-                            name = name.replace("/ /g", "");
-                            $("#preview").empty();
-                            $("#preview").append('<iframe src="/Backend/src/index.php/preview_poi_data/' + name + '" style="width:100%; height:550px;" frameborder="0"></iframe>');
-                            $(".actions a").remove();
-                            $(".actions .download").remove();
-                            $(".actions").append(' <a href="/Backend/src/index.php/download_poi_data/' + name + '"><div class="ui green  button">Download</div></a>')
-                            $('.ui.modal.preview').modal('show');
+                            window.open('/Backend/src/index.php/download_poi_data/'+$(this).children()[0].value);
+                           // mesure = $(this).children()[0].value;
+                           // mesure = mesure.replace("/ /g", "");
+                            //name = k.SUPPLEMENTARY_FIELDS.SAMPLE_NAME + "_" + mesure;
+                          //  name = name.replace("/ /g", "");
+                           // $("#preview").empty();
+                            //$("#preview").append('<iframe src="/Backend/src/index.php/preview_poi_data/' + name + '" style="width:100%; height:550px;" frameborder="0"></iframe>');
+                            //$(".actions a").remove();
+                            //$(".actions .download").remove();
+                            //$(".actions").append(' <a href="/Backend/src/index.php/download_poi_data/' + name + '"><div class="ui green  button">Download</div></a>')
+
+                           // $('.ui.modal.preview').modal('show');
                         });
                         $('.item.pictures').on('click', function(e) {
                             picture = $(this).children()[0].value;
