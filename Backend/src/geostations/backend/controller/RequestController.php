@@ -326,21 +326,21 @@ class RequestController
         $return = array();
         foreach ($response as $key => $value)
         {
-             $longitude = (float)$value['_source']['INTRO']['SAMPLING_POINT'][0]['LONGITUDE'];
-            $latitude = (float)$value['_source']['INTRO']['SAMPLING_POINT'][0]['LATITUDE'];
+
+
+             foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2) {
+             $longitude = (float)$value2['LONGITUDE'];
+            $latitude = (float)$value2['LATITUDE'];
             $proj4 = new Proj4php();
-            $projL93 = new Proj('EPSG:2154',$proj4);
-            $projWGS84 = new Proj('EPSG:4326',$proj4);
+            $projL93 = new Proj('+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',$proj4);
+            $projWGS84 = new Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',$proj4);
             $pointSrc = new Point($longitude,$latitude);
             $pointDest = $proj4->transform($projL93,$projWGS84,$pointSrc);
             $latitude=$pointDest->y;
             $longitude=$pointDest->x;
 
-
-
             if ((strtoupper($sort['mesure']) == strtoupper($value['_source']['INTRO']['MEASUREMENT'][0]['ABBREVIATION']) or $sort['mesure'] == null) and (($latitude >= $sort['lat']['lat1']) && $latitude < $sort['lat']['lat2']) && ($longitude >= $sort['lon']['lon2'] && $longitude < $sort['lon']['lon1']) or $sort['lat'] == null or $sort['lon'] == null)
             {
-             foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2) {
                 
             $current = $value2['ABBREVIATION'];
             if (!$return[$value2['ABBREVIATION']])
@@ -366,13 +366,11 @@ class RequestController
 
             $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
             }
-        }
-        else{
-             var_dump($latitude);
-            var_dump($longitude);
-        }
-
                 $responses = $return;
+        }
+      
+        
+
             }
         
         $responses = json_encode($responses);
