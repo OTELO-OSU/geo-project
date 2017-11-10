@@ -1,12 +1,13 @@
 {
     "require": {
         "slim/slim": "^3.5",
-	"twig/twig": "~1.0"
+	"twig/twig": "~1.0",
+"proj4php/proj4php": "2.0.9"
     },
   "autoload": {
 
   	"psr-0":  {
-  		"petrophysics" : "src"		
+  		"geostations" : "src"		
   }
 }
 }

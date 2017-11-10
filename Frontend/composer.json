@@ -2,11 +2,12 @@
     "require": {
         "slim/slim": "^3.5",
 	"twig/twig": "^1.18"
+	
     },
   "autoload": {
 
   	"psr-0":  {
-  		"petrophysics" : "src"		
+  		"geostations" : "src"		
   }
 }
 }

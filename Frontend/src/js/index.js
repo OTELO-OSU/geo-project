@@ -102,7 +102,17 @@ APP.modules.map = (function() {
                     var latlng =proj4(Lambert93,gps,[long,lat]);
                     var marker = L.marker([latlng[1], latlng[0]]);
                     marker.bindPopup(k.STATION);
+                                circles = L.featureGroup().addTo(map);
+
                     marker.on('click', function(e) {
+                        var circle = new L.Circle(e.latlng, 50, {
+                color: 'black',
+                opacity : 0.8,
+                fillOpacity : 0.5
+            });
+            circles.clearLayers();
+                        circle.addTo(circles)
+
                         measurements = '';
                         rawdatas = '';
                         if (k.FILES) {

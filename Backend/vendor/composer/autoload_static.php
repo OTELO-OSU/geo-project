@@ -11,6 +11,10 @@ class ComposerStaticInit300b8ef629b53b954b8a8d51d34a9c65
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'proj4php\\' => 9,
+        ),
         'T' => 
         array (
             'Twig\\' => 5,
@@ -35,6 +39,10 @@ class ComposerStaticInit300b8ef629b53b954b8a8d51d34a9c65
     );
 
     public static $prefixDirsPsr4 = array (
+        'proj4php\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/proj4php/proj4php/src',
+        ),
         'Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
@@ -62,9 +70,9 @@ class ComposerStaticInit300b8ef629b53b954b8a8d51d34a9c65
     );
 
     public static $prefixesPsr0 = array (
-        'p' => 
+        'g' => 
         array (
-            'petrophysics' => 
+            'geostations' => 
             array (
                 0 => __DIR__ . '/../..' . '/src',
             ),
