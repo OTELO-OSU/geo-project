@@ -86,18 +86,22 @@ class RequestController
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
 
 
+            }
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
-                    if (exif_imagetype($file['ORIGINAL_DATA_URL']))
+                    if (!exif_imagetype($file['ORIGINAL_DATA_URL']))
                     {
+                                            $return[$value2['ABBREVIATION']]['FILES'][]=$file;
+
+                    }
+                    else{
                         $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
                         $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];
 
                     }
                 }
-            }
 
-                $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
+                //$return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
             $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
             }
 
@@ -355,8 +359,12 @@ class RequestController
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
-                $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
+               // $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
 
+            }
+
+            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
+            }
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
                     if (exif_imagetype($file['ORIGINAL_DATA_URL']))
@@ -364,11 +372,10 @@ class RequestController
                         $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
                         $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];                   
                          }
+                else{
+                    $return[$value2['ABBREVIATION']]['FILES'][]=$file;
                 }
-            }
-
-            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
-            }
+                }
                 $responses = $return;
         }
       
