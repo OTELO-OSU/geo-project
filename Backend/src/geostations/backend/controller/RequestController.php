@@ -90,7 +90,9 @@ class RequestController
                 {
                     if (exif_imagetype($file['ORIGINAL_DATA_URL']))
                     {
-                        $return[$current]['PICTURES'][$key] = $file;
+                        $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
+                        $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];
+
                     }
                 }
             }
@@ -353,14 +355,15 @@ class RequestController
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
-                $return[$value2['ABBREVIATION']]['FILES'] = $value['_source']['DATA']['FILES'];
+                $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
 
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
                     if (exif_imagetype($file['ORIGINAL_DATA_URL']))
                     {
-                        $return[$current]['PICTURES'][$key] = $file;
-                    }
+                        $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
+                        $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];                   
+                         }
                 }
             }
 
@@ -403,7 +406,7 @@ class RequestController
      function Request_poi_raw_data($id)
     {
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=INTRO.MEASUREMENT.ABBREVIATION:"' . $id .'"&type='.$config['COLLECTION_NAME'];
+         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'] ;
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -426,9 +429,9 @@ class RequestController
 
     function Request_poi_img($id, $picturename)
     {
-        $explode = explode('_', $id, 2);
+        //$explode = explode('_', $id, 2);
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(INTRO.MEASUREMENT.ABBREVIATION:"' . $explode[1] . '"%20AND%20INTRO.SUPPLEMENTARY_FIELDS.SAMPLE_NAME:"' . $explode[0] . '")&type='. $config['COLLECTION_NAME'] ;
+         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(_id:"' . $id . '")&type=' . $config['COLLECTION_NAME'] ;
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",

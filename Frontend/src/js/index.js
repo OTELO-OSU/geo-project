@@ -117,8 +117,8 @@ APP.modules.map = (function() {
                         rawdatas = '';
                         if (k.FILES) {
                             k.FILES.forEach(function(k, v) {
-                                if ((new RegExp('_RAW')).test(k.ABBREVIATION)) {
-                                    rawdata = ' <div class="item measurement_abbreviation_raw" ><input type="hidden" value="' + k.ABBREVIATION + '"> <div class="content"> <div class="header">' + k.ABBREVIATION + '</div><div>' + k.NATURE + '</div>  <a href="/Backend/src/index.php/download_poi_raw_data/' + k.ABBREVIATION + '"><div class="ui green  button">Download</div></a></div> </div>'
+                                if ((new RegExp('_RAW')).test(k.DATA_URL)) {
+                                    rawdata = ' <div class="item measurement_abbreviation_raw" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL + '</div><div>' + k.DATA_URL + '</div>  </div> </div>'
                                     rawdatas += rawdata;
                                 } else {
                                     measurement = ' <div class="item measurement_abbreviation" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL + '</div><div>' + k.DATA_URL + '</div> </div> </div>'
@@ -142,15 +142,11 @@ APP.modules.map = (function() {
                         picturemetas = '';
                         if (k.PICTURES) {
                             for (key in k.PICTURES) {
-                                picture = k.PICTURES[key].DATA_URL;
-                                name = k.SUPPLEMENTARY_FIELDS.SAMPLE_NAME;
-                                if ((new RegExp('_OUTCROP')).test(picture) || (new RegExp('_SAMPLE')).test(picture)) {
-                                    picturemeta = '<div class="item pictures" ><input type="hidden" value="' + k.PICTURES[key].DATA_URL + '"> <div class="content picture" > <img class="ui fluid image" src="/Backend/src/index.php/preview_img/' + name + '/' + picture + '""</img><div class="header">' + k.PICTURES[key].DATA_URL + '</div></div></div>';
-                                    picturemetas += picturemeta;
-                                } else {
-                                    picture = ' <div class="item pictures" ><input type="hidden" value="' + k.PICTURES[key].DATA_URL + '"> <div class="content"> <div class="header">' + k.PICTURES[key].DATA_URL + '</div></div> </div>'
-                                    pictures += picture;
-                                }
+                                picture = k.PICTURES[key].NAME;
+                                name =  k.PICTURES[key].ID;
+                                picture = ' <div class="item pictures" ><input type="hidden" value="' + k.PICTURES[key].NAME + '"> <div class="content"> <div class="header">' + k.PICTURES[key].NAME + '</div></div> </div>'
+                                pictures += picture;
+                                
                             }
                             picturemetas = '<div class="ui middle aligned selection list">' + picturemetas + '</div>';
                             pictures = '<div class="ui middle aligned selection list">' + pictures + '</div>';
@@ -183,9 +179,12 @@ APP.modules.map = (function() {
 
                            // $('.ui.modal.preview').modal('show');
                         });
+                         $('.item.measurement_abbreviation_raw').on('click', function(e) {
+                            window.open('/Backend/src/index.php/download_poi_raw_data/'+$(this).children()[0].value);
+                        });
                         $('.item.pictures').on('click', function(e) {
                             picture = $(this).children()[0].value;
-                            name = k.SUPPLEMENTARY_FIELDS.SAMPLE_NAME;
+                            //name = k.SUPPLEMENTARY_FIELDS.SAMPLE_NAME;
                             name = name.replace("/ /g", "");
                             $("#preview").empty();
                             $("#preview").append('<img class="ui fluid image" src="/Backend/src/index.php/preview_img/' + name + '/' + picture + '""</img>');
