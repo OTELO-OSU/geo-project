@@ -18,7 +18,7 @@ APP.modules.map = (function() {
      *  @var map : carte (objet Leaflet)
      *  @var markers : ensemble des marqueurs de la carte
      */
-    var map, markers, areaSelect;
+    var map, markers, areaSelect,circles;
     return {
         /**
          * methode d'initialisation
@@ -57,6 +57,14 @@ APP.modules.map = (function() {
          * @param data
          */
         affichagePoi: function(data, all, updatedate, updatemesure, updatelithology) {
+            if(circles){
+                circles.clearLayers();
+            }
+            map.on('click',function(){
+                if(circles){
+                circles.clearLayers();
+                }
+            })
             data = JSON.parse(data);
             $('.message').empty();
             if (APP.group != null) {
