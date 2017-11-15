@@ -86,6 +86,7 @@ class RequestController
                 $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
 
 
+            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
             }
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
@@ -102,7 +103,6 @@ class RequestController
                 }
 
                 //$return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
-            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
             }
 
         }
