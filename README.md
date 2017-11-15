@@ -40,7 +40,7 @@ Le fichier de configuration se trouve dans Backend/config.ini
     apt-get install python-pip
     pip install 'mongo-connector[elastic5]'
     
-** Utilisation **
+**Utilisation**
 
 Lancez Mongo-connector
 
