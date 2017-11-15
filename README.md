@@ -22,3 +22,30 @@ Le fichier de configuration se trouve dans Backend/config.ini
     #BDD NAME
     INDEX_NAME=ordar
     CSV_FOLDER="/data/applis/ORDaR/Uploads/"
+
+
+**Installation d’elasticsearch**
+
+    Oracle JDK doit être installé avant de continuer.
+
+    curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.2.2.tar.gz
+
+    tar -xvf elasticsearch-5.2.2.tar.gz
+
+    cd elasticsearch-5.2.2/bin
+
+
+**Installation de mongo-connector**
+
+    apt-get install python-pip
+    pip install 'mongo-connector[elastic5]'
+    
+** Utilisation **
+
+Lancez Mongo-connector
+
+sudo mongo-connector -m localhost:27017 -c mongo-connector_config.json  --namespace NOMDELABDD.*
+
+Mongo connector permet de répliquer les données présentes dans mongoDB sur un cluster elasticsearch.
+
+
