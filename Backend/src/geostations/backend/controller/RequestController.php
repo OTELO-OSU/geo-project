@@ -364,7 +364,6 @@ class RequestController
             }
 
             $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
-            }
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
                     if (exif_imagetype($file['ORIGINAL_DATA_URL']))
@@ -376,6 +375,7 @@ class RequestController
                     $return[$value2['ABBREVIATION']]['FILES'][]=$file;
                 }
                 }
+            }
                 $responses = $return;
         }
       
