@@ -199,7 +199,9 @@ APP.modules.map = (function() {
                             $(".actions a").remove();
                             $(".actions .download").remove();
                             $(".actions").append(' <a href="/Backend/src/index.php/download_img/' + name + '/' + picture + '"><div class="ui green  button">Download</div></a>')
+                            setTimeout(function() {
                             $('.ui.modal.preview').modal('show');
+                        }, 100);
                         });
                     });
                     marker.on('mouseover', function(e) {

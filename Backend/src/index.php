@@ -31,14 +31,12 @@ $app->post('/get_poi_type_data', function (Request $req,Response $responseSlim) 
 	$request = new RequestApi();
 	$response = $request->Request_data_with_sort($json);
 	$responseSlim->withHeader('Content-Type', 'application/json');
-    //return $response;
 });
 $app->post('/download_poi_type_data', function (Request $req,Response $responseSlim) {
 	$json  = $req->getparam('json');
 	$request = new RequestApi();
 	$response = $request->Download_data_with_sort($json);
 	$responseSlim->withHeader('Content-Type', 'application/json');
-    //return $response;
 });
 
 

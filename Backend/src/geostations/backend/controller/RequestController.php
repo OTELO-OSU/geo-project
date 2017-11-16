@@ -5,8 +5,6 @@ use proj4php\Proj4php;
 use proj4php\Proj;
 use proj4php\Point;
 
-
-
 class RequestController
 {
 
@@ -46,8 +44,8 @@ class RequestController
     {
 
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?type=" . $config['COLLECTION_NAME'] ."&size=10000";
-       $postcontent = '{ "_source": { 
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?type=" . $config['COLLECTION_NAME'] . "&size=10000";
+        $postcontent = '{ "_source": { 
             "includes": [ "INTRO.SAMPLING_DATE","INTRO.TITLE","INTRO.SUPPLEMENTARY_FIELDS.LITHOLOGY","INTRO.SUPPLEMENTARY_FIELDS.DESCRIPTION","INTRO.SUPPLEMENTARY_FIELDS.SAMPLE_NAME","INTRO.SUPPLEMENTARY_FIELDS.ALTERATION_DEGREE","INTRO.SUPPLEMENTARY_FIELDS.NAME_REFERENT","INTRO.SUPPLEMENTARY_FIELDS.FIRST_NAME_REFERENT",
             "INTRO.SAMPLING_DATE","INTRO.SAMPLING_POINT","INTRO.MEASUREMENT","DATA.FILES","INTRO.SAMPLE_KIND" ] 
              }}';
@@ -64,38 +62,39 @@ class RequestController
         $response = self::Curlrequest($url, $curlopt);
         $response = json_decode($response, true);
         $response = $response['hits']['hits'];
-        
+
         $responses = array();
         $return = array();
         foreach ($response as $key => $value)
         {
-            
-            foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2) {
-                
-            $current = $value2['ABBREVIATION'];
-            if (!$return[$value2['ABBREVIATION']])
+
+            foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2)
             {
-                $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
-             
-                $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
-                $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
-                $return[$value2['ABBREVIATION']]['SAMPLE_KIND'] = $value['_source']['INTRO']['SAMPLE_KIND'][0]['NAME'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
 
+                $current = $value2['ABBREVIATION'];
+                if (!$return[$value2['ABBREVIATION']])
+                {
+                    $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
 
-            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
-            }
+                    $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
+                    $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
+                    $return[$value2['ABBREVIATION']]['SAMPLE_KIND'] = $value['_source']['INTRO']['SAMPLE_KIND'][0]['NAME'];
+                    $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
+                    $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
+                    $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
+                    $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
+
+                    $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
+                }
                 foreach ($value['_source']['DATA']['FILES'] as $key => $file)
                 {
                     if (!exif_imagetype($file['ORIGINAL_DATA_URL']))
                     {
-                                            $return[$value2['ABBREVIATION']]['FILES'][]=$file;
+                        $return[$value2['ABBREVIATION']]['FILES'][] = $file;
 
                     }
-                    else{
+                    else
+                    {
                         $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
                         $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];
 
@@ -103,6 +102,7 @@ class RequestController
                 }
 
                 //$return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
+                
             }
 
         }
@@ -123,7 +123,7 @@ class RequestController
         $sort = json_decode($sort, true);
         if ($sort['lithology'])
         {
-           $lithology = 'INTRO.SAMPLE_KIND.NAME:"' . urlencode($sort['lithology']) . '"%20AND%20';
+            $lithology = 'INTRO.SAMPLE_KIND.NAME:"' . urlencode($sort['lithology']) . '"%20AND%20';
         }
         if ($sort['mindate'] and $sort['maxdate'])
         {
@@ -139,7 +139,7 @@ class RequestController
         }
 
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . $geo . "type=" . $config['COLLECTION_NAME'] ."&size=10000";
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . $geo . "type=" . $config['COLLECTION_NAME'] . "&size=10000";
 
         $postcontent = '{ "_source": { 
             "includes": [ "DATA","INTRO.MEASUREMENT.ABBREVIATION" ] 
@@ -207,7 +207,6 @@ class RequestController
 
     }
 
-
     function Download_data_with_sort($sort)
     {
         $lithology = '';
@@ -215,7 +214,7 @@ class RequestController
         $sort = json_decode($sort, true);
         if ($sort['lithology'])
         {
-           $lithology = 'INTRO.SUPPLEMENTARY_FIELDS.LITHOLOGY:"' . urlencode($sort['lithology']) . '"%20AND%20';
+            $lithology = 'INTRO.SUPPLEMENTARY_FIELDS.LITHOLOGY:"' . urlencode($sort['lithology']) . '"%20AND%20';
         }
         if ($sort['mindate'] and $sort['maxdate'])
         {
@@ -226,7 +225,7 @@ class RequestController
             $mesure = 'INTRO.MEASUREMENT.ABBREVIATION:"' . urlencode($sort['mesure']) . '"%20AND%20';
         }
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] ."&size=10000";
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] . "&size=10000";
 
         $postcontent = '{ "_source": { 
             "includes": [ "DATA","INTRO.MEASUREMENT.ABBREVIATION" ] 
@@ -306,11 +305,11 @@ class RequestController
             $mesure = 'INTRO.MEASUREMENT.ABBREVIATION:"' . urlencode($sort['mesure']) . '"%20AND%20';
         }
         /*if ($sort['lat'] and $sort['lon']) {
-        	$geo='INTRO.SAMPLING_POINT.LONGITUDE:['.abs($sort['lat']['lat1']).'%20TO%20'.abs($sort['lat']['lat2']).']%20AND%20INTRO.SAMPLING_POINT.LATITUDE:['.abs($sort['lon']['lon1']).'%20TO%20'.abs($sort['lon']['lon2']).']';
+            $geo='INTRO.SAMPLING_POINT.LONGITUDE:['.abs($sort['lat']['lat1']).'%20TO%20'.abs($sort['lat']['lat2']).']%20AND%20INTRO.SAMPLING_POINT.LATITUDE:['.abs($sort['lon']['lon1']).'%20TO%20'.abs($sort['lon']['lon2']).']';
         }*/
 
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] ."&size=10000";
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] . "&size=10000";
         $postcontent = '{ "_source": { 
             "includes": [ "INTRO.SAMPLING_DATE","INTRO.TITLE","INTRO.SUPPLEMENTARY_FIELDS.LITHOLOGY","INTRO.SUPPLEMENTARY_FIELDS.DESCRIPTION","INTRO.SUPPLEMENTARY_FIELDS.SAMPLE_NAME","INTRO.SUPPLEMENTARY_FIELDS.ALTERATION_DEGREE","INTRO.SUPPLEMENTARY_FIELDS.NAME_REFERENT","INTRO.SUPPLEMENTARY_FIELDS.FIRST_NAME_REFERENT",
             "INTRO.SAMPLING_DATE","INTRO.SAMPLING_POINT","INTRO.MEASUREMENT","DATA.FILES" ] 
@@ -333,68 +332,68 @@ class RequestController
         foreach ($response as $key => $value)
         {
 
-
-             foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2) {
-            $COORDINATE_SYSTEM=$value2['COORDINATE_SYSTEM'];
-            $longitude = (float)$value2['LONGITUDE'];
-            $latitude = (float)$value2['LATITUDE'];
-            if (strtoupper($COORDINATE_SYSTEM)=='LAMBERT93') {
-            $proj4 = new Proj4php();
-            $projL93 = new Proj('+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs',$proj4);
-            $projWGS84 = new Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',$proj4);
-            $pointSrc = new Point($longitude,$latitude);
-            $pointDest = $proj4->transform($projL93,$projWGS84,$pointSrc);
-            $latitude=$pointDest->y;
-            $longitude=$pointDest->x;
-            }
-
-            if ((strtoupper($sort['mesure']) == strtoupper($value['_source']['INTRO']['MEASUREMENT'][0]['ABBREVIATION']) or $sort['mesure'] == null) and (($latitude >= $sort['lat']['lat1']) && $latitude < $sort['lat']['lat2']) && ($longitude >= $sort['lon']['lon2'] && $longitude < $sort['lon']['lon1']) or $sort['lat'] == null or $sort['lon'] == null)
+            foreach ($value['_source']['INTRO']['SAMPLING_POINT'] as $key => $value2)
             {
-                
-            $current = $value2['ABBREVIATION'];
-            if (!$return[$value2['ABBREVIATION']])
-            {
-                $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
-                //$return[$value2['ABBREVIATION']]['SUPPLEMENTARY_FIELDS'] = $value['_source']['INTRO']['SUPPLEMENTARY_FIELDS'];
-                $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
-                $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
-                $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
-               // $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
-
-            }
-
-            $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
-                foreach ($value['_source']['DATA']['FILES'] as $key => $file)
+                $COORDINATE_SYSTEM = $value2['COORDINATE_SYSTEM'];
+                $longitude = (float)$value2['LONGITUDE'];
+                $latitude = (float)$value2['LATITUDE'];
+                if (strtoupper($COORDINATE_SYSTEM) == 'LAMBERT93')
                 {
-                    if (exif_imagetype($file['ORIGINAL_DATA_URL']))
-                    {
-                        $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
-                        $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];                   
-                         }
-                else{
-                    $return[$value2['ABBREVIATION']]['FILES'][]=$file;
+                    $proj4 = new Proj4php();
+                    $projL93 = new Proj('+proj=lcc +lat_1=49 +lat_2=44 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs', $proj4);
+                    $projWGS84 = new Proj('+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs', $proj4);
+                    $pointSrc = new Point($longitude, $latitude);
+                    $pointDest = $proj4->transform($projL93, $projWGS84, $pointSrc);
+                    $latitude = $pointDest->y;
+                    $longitude = $pointDest->x;
                 }
-                }
-            }
-                $responses = $return;
-        }
-      
-        
 
+                if ((strtoupper($sort['mesure']) == strtoupper($value['_source']['INTRO']['MEASUREMENT'][0]['ABBREVIATION']) or $sort['mesure'] == null) and (($latitude >= $sort['lat']['lat1']) && $latitude < $sort['lat']['lat2']) && ($longitude >= $sort['lon']['lon2'] && $longitude < $sort['lon']['lon1']) or $sort['lat'] == null or $sort['lon'] == null)
+                {
+
+                    $current = $value2['ABBREVIATION'];
+                    if (!$return[$value2['ABBREVIATION']])
+                    {
+                        $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
+                        //$return[$value2['ABBREVIATION']]['SUPPLEMENTARY_FIELDS'] = $value['_source']['INTRO']['SUPPLEMENTARY_FIELDS'];
+                        $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
+                        $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
+                        $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
+                        $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
+                        $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
+                        $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
+                        // $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
+                        
+                    }
+
+                    $return[$value2['ABBREVIATION']]['MEASUREMENT'] = $value['_source']['INTRO']['MEASUREMENT'];
+                    foreach ($value['_source']['DATA']['FILES'] as $key => $file)
+                    {
+                        if (exif_imagetype($file['ORIGINAL_DATA_URL']))
+                        {
+                            $return[$current]['PICTURES'][$key]['NAME'] = $file['DATA_URL'];
+                            $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];
+                        }
+                        else
+                        {
+                            $return[$value2['ABBREVIATION']]['FILES'][] = $file;
+                        }
+                    }
+                }
+                $responses = $return;
             }
-        
+
+        }
+
         $responses = json_encode($responses);
         return $responses;
     }
 
     function Request_poi_data($id)
     {
-       // $explode = explode('_', $id, 2);
+        // $explode = explode('_', $id, 2);
         $config = self::ConfigFile();
-        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'] ;
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'];
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -407,16 +406,16 @@ class RequestController
         $response = self::Curlrequest($url, $curlopt);
         $response = json_decode($response, true);
         $identifier = $response['hits']['hits'][0]['_source']['INTRO']['SUPPLEMENTARY_FIELDS']['SAMPLE_NAME'] . '_' . $response['hits']['hits'][0]['_source']['INTRO']['MEASUREMENT'][0]['ABBREVIATION'];
-       
-            $response = json_encode($response['hits']['hits'][0]['_source']['DATA']);
-            return $response;
-        
+
+        $response = json_encode($response['hits']['hits'][0]['_source']['DATA']);
+        return $response;
+
     }
 
-     function Request_poi_raw_data($id)
+    function Request_poi_raw_data($id)
     {
         $config = self::ConfigFile();
-         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'] ;
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'];
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
@@ -428,20 +427,20 @@ class RequestController
         );
         $response = self::Curlrequest($url, $curlopt);
         $response = json_decode($response, true);
-        
-            if (count($response['hits']['hits'])==1) {
+
+        if (count($response['hits']['hits']) == 1)
+        {
             $response = json_encode($response['hits']['hits'][0]['_source']['DATA']);
             return $response;
-            }
-        
-    }
+        }
 
+    }
 
     function Request_poi_img($id, $picturename)
     {
         //$explode = explode('_', $id, 2);
         $config = self::ConfigFile();
-         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(_id:"' . $id . '")&type=' . $config['COLLECTION_NAME'] ;
+        $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(_id:"' . $id . '")&type=' . $config['COLLECTION_NAME'];
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
