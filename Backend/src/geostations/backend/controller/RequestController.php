@@ -99,10 +99,7 @@ class RequestController
                         $return[$current]['PICTURES'][$key]['ID'] = $value['_id'];
 
                     }
-                }
-
-                //$return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
-                
+                }                
             }
 
         }
@@ -304,10 +301,6 @@ class RequestController
         {
             $mesure = 'INTRO.MEASUREMENT.ABBREVIATION:"' . urlencode($sort['mesure']) . '"%20AND%20';
         }
-        /*if ($sort['lat'] and $sort['lon']) {
-            $geo='INTRO.SAMPLING_POINT.LONGITUDE:['.abs($sort['lat']['lat1']).'%20TO%20'.abs($sort['lat']['lat2']).']%20AND%20INTRO.SAMPLING_POINT.LATITUDE:['.abs($sort['lon']['lon1']).'%20TO%20'.abs($sort['lon']['lon2']).']';
-        }*/
-
         $config = self::ConfigFile();
         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] . "&size=10000";
         $postcontent = '{ "_source": { 
@@ -355,14 +348,12 @@ class RequestController
                     if (!$return[$value2['ABBREVIATION']])
                     {
                         $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
-                        //$return[$value2['ABBREVIATION']]['SUPPLEMENTARY_FIELDS'] = $value['_source']['INTRO']['SUPPLEMENTARY_FIELDS'];
                         $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
                         $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
                         $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
                         $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['DESCRIPTION'] = $value2['DESCRIPTION'];
                         $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LONGITUDE'] = $value2['LONGITUDE'];
                         $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['SYSTEM'] = $value2['COORDINATE_SYSTEM'];
-                        // $return[$value2['ABBREVIATION']]['FILES'][]['DATA_URL'] = $value['_source']['DATA']['FILES'][0]['DATA_URL'];
                         
                     }
 
@@ -391,7 +382,6 @@ class RequestController
 
     function Request_poi_data($id)
     {
-        // $explode = explode('_', $id, 2);
         $config = self::ConfigFile();
         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(DATA.FILES.DATA_URL:"' . $id . '")&type=' . $config['COLLECTION_NAME'];
         $curlopt = array(
@@ -438,7 +428,6 @@ class RequestController
 
     function Request_poi_img($id, $picturename)
     {
-        //$explode = explode('_', $id, 2);
         $config = self::ConfigFile();
         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . '/_search?q=(_id:"' . $id . '")&type=' . $config['COLLECTION_NAME'];
         $curlopt = array(
