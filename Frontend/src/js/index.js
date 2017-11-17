@@ -93,8 +93,10 @@ APP.modules.map = (function() {
                 var measurement_abbreviation = [];
                 var measurement_nature = [];
                 array.forEach(function(k, v) {
-
+                    if (k.SAMPLE_KIND!=null) {
+                       
                     lithology[k.SAMPLE_KIND] = (k.SAMPLE_KIND);
+                        }
                     creationdate.push(k.SAMPLING_DATE);
                     k.MEASUREMENT.forEach(function(k, v) {
                         mesure = k.ABBREVIATION.split("_");
@@ -230,6 +232,7 @@ APP.modules.map = (function() {
                     for (key in lithology) {
                         item = '<div class="item">' + key + '</div>';
                         lithology += item;
+                        
                     }
                     lithology = '<div class="ui one column"><div class="ui selection dropdown lithology"><input type="hidden" name="lithology"> <i class="dropdown icon"></i><div class="default text">All</div><div class="menu">' + lithology + ' </div></div></div>';
                     append += lithology;
@@ -239,6 +242,7 @@ APP.modules.map = (function() {
                     for (key in lithology) {
                         item = '<div class="item">' + key + '</div>';
                         lithology += item;
+                        
                     }
                     lithology = '<div class="ui one column"><div class="ui selection dropdown lithology"><input type="hidden" name="lithology"> <i class="dropdown icon"></i><div class="default text">All</div><div class="menu">' + lithology + ' </div></div></div>';
                     append += lithology;
