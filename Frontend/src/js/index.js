@@ -129,7 +129,7 @@ APP.modules.map = (function() {
                                     rawdata = ' <div class="item measurement_abbreviation_raw" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL + '</div><div>' + k.DATA_URL + '</div>  </div> </div>'
                                     rawdatas += rawdata;
                                 } else {
-                                    measurement = ' <div class="item measurement_abbreviation" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL + '</div><div>' + k.DATA_URL + '</div> </div> </div>'
+                                    measurement = ' <div class="item measurement_abbreviation" ><input type="hidden" value="' + k.DATA_URL + '"> <div class="content"> <div class="header">' + k.DATA_URL.substring(0, k.DATA_URL.indexOf('_DATA'))+ '</div><div>' + k.DATA_URL.substring(0, k.DATA_URL.indexOf('_DATA')) + '</div> </div> </div>'
                                     measurements += measurement;
                                 }
                             });
@@ -372,11 +372,6 @@ APP.modules.service = (function() {
                 APP.modules.service.getpoisorted(json, false, false, false);
             }
             APP.modules.service.getdata(json);
-            $('.control .button').remove();
-            $('.control').append('<div class="ui button">Preview CSV for ' + mesure.toUpperCase() + '</div>')
-            $('.control .button').on('click', function(e) {
-                $('.ui.modal.preview').modal('show');
-            });
         },
         searchlithology: function(lithology) {
             obj = {
