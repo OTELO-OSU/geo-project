@@ -305,7 +305,7 @@ class RequestController
         $url = $config['ESHOST'] . '/' . $config['INDEX_NAME'] . "/_search?q=" . $lithology . $mesure . $date . "type=" . $config['COLLECTION_NAME'] . "&size=10000";
         $postcontent = '{ "_source": { 
             "includes": [ "INTRO.SAMPLING_DATE","INTRO.TITLE","INTRO.SUPPLEMENTARY_FIELDS.LITHOLOGY","INTRO.SUPPLEMENTARY_FIELDS.DESCRIPTION","INTRO.SUPPLEMENTARY_FIELDS.SAMPLE_NAME","INTRO.SUPPLEMENTARY_FIELDS.ALTERATION_DEGREE","INTRO.SUPPLEMENTARY_FIELDS.NAME_REFERENT","INTRO.SUPPLEMENTARY_FIELDS.FIRST_NAME_REFERENT",
-            "INTRO.SAMPLING_DATE","INTRO.SAMPLING_POINT","INTRO.MEASUREMENT","DATA.FILES" ] 
+            "INTRO.SAMPLING_DATE","INTRO.SAMPLING_POINT","INTRO.MEASUREMENT","DATA.FILES","INTRO.SAMPLE_KIND" ] 
              }}';
         $curlopt = array(
             CURLOPT_RETURNTRANSFER => true,
@@ -348,6 +348,7 @@ class RequestController
                     if (!$return[$value2['ABBREVIATION']])
                     {
                         $return[$value2['ABBREVIATION']]['SAMPLING_DATE'] = $value['_source']['INTRO']['SAMPLING_DATE'][0];
+                        $return[$value2['ABBREVIATION']]['SAMPLE_KIND'] = $value['_source']['INTRO']['SAMPLE_KIND'][0]['NAME'];
                         $return[$value2['ABBREVIATION']]['STATION'] = $value2['ABBREVIATION'];
                         $return[$value2['ABBREVIATION']]['TITLE'] = $value['_source']['INTRO']['TITLE'];
                         $return[$value2['ABBREVIATION']]['SAMPLING_POINT'][0]['LATITUDE'] = $value2['LATITUDE'];
