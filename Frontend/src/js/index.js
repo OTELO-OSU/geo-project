@@ -34,6 +34,17 @@ APP.modules.map = (function() {
             var osm = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
+            var ign = L.tileLayer(
+            'https://wxs.ign.fr/9bci2kf4ow18mxkruzqcl3pi/geoportail/wmts?service=WMTS&request=GetTile&version=1.0.0&tilematrixset=PM&tilematrix={z}&tilecol={x}&tilerow={y}&layer=ORTHOIMAGERY.ORTHOPHOTOS&format=image/jpeg&style=normal',
+            {
+                minZoom : 0,
+                maxZoom : 18,
+                tileSize : 256,
+                attribution : "IGN-F/Géoportail"
+            }).addTo(map);
+            var baseLayers = {"IGN" : ign, "OpenStreetMap" : osm};
+            L.control.scale({'position':'bottomleft','metric':true,'imperial':false}).addTo(map);
+            L.control.layers(baseLayers, {}).addTo(map);
             $(document).keydown(function(event) {
                 if (event.which == "17") {
                     areaSelect = L.areaSelect({
@@ -173,7 +184,7 @@ APP.modules.map = (function() {
                         /*if (k.SUPPLEMENTARY_FIELDS.NAME_REFERENT) {
                             referent = '<br> Referent Name: ' + k.SUPPLEMENTARY_FIELDS.NAME_REFERENT + '<br> Referent First name: ' + k.SUPPLEMENTARY_FIELDS.FIRST_NAME_REFERENT;
                         }*/
-                        $('.ui.sidebar.right').append('<div class="ui styled accordion"> <div class="active title"> <i class="dropdown icon"></i> ' + k.STATION + ' </div> <div class="active content"> <h3>' + k.TITLE + '</h3><p> Description: ' + k.SAMPLING_POINT[0].DESCRIPTION + '<br> Latitude: ' + k.SAMPLING_POINT[0].LATITUDE + ' Longitude: ' + k.SAMPLING_POINT[0].LONGITUDE + '</p>' + picturemetas + '</div>' + measurements + pictures + rawdatas)
+                        $('.ui.sidebar.right').append('<div class="ui styled accordion"> <div class="active title"> <i class="dropdown icon"></i> ' + k.STATION + ' </div> <div class="active content"> <h3>' + k.TITLE + '</h3><p> Description: ' + k.SAMPLING_POINT[0].DESCRIPTION + '<br><br> Latitude: ' + k.SAMPLING_POINT[0].LATITUDE + ' Longitude: ' + k.SAMPLING_POINT[0].LONGITUDE + '</p>' + picturemetas + '</div>' + measurements + pictures + rawdatas)
                         $('.ui.accordion').accordion();
                         $('.item.measurement_abbreviation').on('click', function(e) {
                             window.open('/Backend/src/index.php/download_poi_data/'+$(this).children()[0].value);
